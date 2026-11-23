@@ -49,6 +49,8 @@ These projects were completed in **The University of Texas at Austin Post Gradua
 | 6. Introduction to Computer Vision | [Helmet detection](06-helmet-detection-cv/) |
 | 7. Model Deployment | [SuperKart sales API](07-superkart-model-deployment/) |
 
+**Outcome:** completed all seven modules with a **4.14 GPA** on the program's 4.33 scale (A+ = 4.33 for 96% of marks or more; A = 4.00 for 91% or more) and 95% attendance, as shown on the program's learner dashboard.
+
 - Projects used course-provided "low-code" notebook templates. I completed the implementation, ran the experiments, and wrote the analysis.
 - Course instructions and problem text were removed with [`tools/clean_notebook.py`](tools/clean_notebook.py). Code, outputs, and my observations are unchanged; the tool refuses to write a notebook whose code-cell or output count changes.
 - **Presentations:** each project's `presentation/` folder holds the deck I submitted, unedited. The decks are my work on the course's slide template, so they carry its logo and footer. Where a deck's claims differ from the code, the project README says so and points to the verified result.
