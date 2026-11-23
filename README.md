@@ -2,7 +2,7 @@
 
 **Mersedyes Livingston** · DevSecOps & compliance engineering · [LinkedIn](https://linkedin.com/in/mersedyes)
 
-Seven applied machine-learning projects, from exploratory analysis to a deployed prediction API and an LLM retrieval system, completed between January and August 2025. Each includes the presentation I gave and either the original notebook or, where it wasn't recovered, a 2026 re-run.
+Seven applied machine-learning projects, from exploratory analysis to a deployed prediction API and an LLM retrieval system, completed between January and August 2025 as the graded projects of a UT Austin certificate program ([provenance](#provenance-and-scope)). Each includes the presentation I gave and either the original notebook or, where it wasn't recovered, a 2026 re-run.
 
 In November 2026 I re-audited each one for **evaluation validity**: does the reported result actually support the claim being made? I then re-ran three of them (personal loan, visa certification, SuperKart) under a corrected protocol, and rebuilt and ran the medical RAG system with a corrected evaluation design.
 
@@ -37,7 +37,17 @@ Results come from executed notebooks or scripts in this repository, or from reco
 
 ## Provenance and scope
 
-These projects were completed in **The University of Texas at Austin Post Graduate Program in Artificial Intelligence and Machine Learning: Business Applications** (delivered with Great Learning; January 2025 cohort).
+These projects were completed in **The University of Texas at Austin Post Graduate Program in Artificial Intelligence and Machine Learning: Business Applications**, a part-time online certificate program from the McCombs School of Business, delivered with Great Learning (January 2025 cohort). Each of the program's seven core modules ended in a graded project, and this repository contains all seven:
+
+| Module | Project |
+|---|---|
+| 1. Python Foundations | [FoodHub order analysis](01-foodhub-eda/) |
+| 2. Machine Learning | [Personal-loan propensity](02-personal-loan-classification/) |
+| 3. Advanced Machine Learning | [Visa certification](03-easyvisa-ensemble-classification/) |
+| 4. Introduction to Neural Networks | [Bank churn](04-bank-churn-neural-network/) |
+| 5. Natural Language Processing with Generative AI | [Medical RAG assistant](05-medical-rag-llm/) |
+| 6. Introduction to Computer Vision | [Helmet detection](06-helmet-detection-cv/) |
+| 7. Model Deployment | [SuperKart sales API](07-superkart-model-deployment/) |
 
 - Projects used course-provided "low-code" notebook templates. I completed the implementation, ran the experiments, and wrote the analysis.
 - Course instructions and problem text were removed with [`tools/clean_notebook.py`](tools/clean_notebook.py). Code, outputs, and my observations are unchanged; the tool refuses to write a notebook whose code-cell or output count changes.
