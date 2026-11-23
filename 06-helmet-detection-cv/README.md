@@ -32,5 +32,9 @@ Final model on the held-out test set: **accuracy, precision, recall, and F1 all 
 - **Minor:** the augmented training generator used `shuffle=False`, which feeds batches in a fixed order and can bias training. Worth correcting in a re-run.
 - **Deployment framing:** for safety monitoring, the costly error is a missed no-helmet case. Report recall on that class separately and choose a threshold accordingly.
 
+## Presentation
+[`presentation/Helmet_Detection_Presentation.pdf`](presentation/Helmet_Detection_Presentation.pdf) is my submitted deck (26 slides), unedited.
+
 ## Files
 - [`helmet_detection_cnn.ipynb`](helmet_detection_cnn.ipynb): cleaned notebook (course instructions removed; code and outputs unchanged).
+- [`presentation/Helmet_Detection_Presentation.pdf`](presentation/Helmet_Detection_Presentation.pdf): original 2025 presentation.

@@ -1,0 +1,337 @@
+{
+  "data_sha256": "84eff9003d858ca52386f233f6e285ebd87486ef36580ea77a44826166308c0c",
+  "n_rows": 25480,
+  "certified_rate": 0.6678963893249608,
+  "selection_metric": "ROC-AUC, 5-fold stratified CV on training set",
+  "cv": [
+    {
+      "model": "Random forest",
+      "roc_auc": 0.7868356661753395,
+      "balanced_accuracy": 0.6857678748184602,
+      "macro_f1": 0.6958051167063309,
+      "f1_certified": 0.8240851784247305,
+      "recall_denied": 0.49467784239936136,
+      "accuracy": 0.7499435218954015,
+      "roc_auc_sd": 0.003712910318835713,
+      "params": {
+        "max_depth": 12,
+        "min_samples_leaf": 5
+      }
+    },
+    {
+      "model": "Gradient boosting",
+      "roc_auc": 0.7830795539929044,
+      "balanced_accuracy": 0.6852278748785965,
+      "macro_f1": 0.6950134316143279,
+      "f1_certified": 0.8228148460116037,
+      "recall_denied": 0.49653595050746946,
+      "accuracy": 0.748597994697281,
+      "roc_auc_sd": 0.005307136369527437,
+      "params": {
+        "learning_rate": 0.05,
+        "max_depth": 3
+      }
+    },
+    {
+      "model": "XGBoost",
+      "roc_auc": 0.7820687531108492,
+      "balanced_accuracy": 0.686111075952016,
+      "macro_f1": 0.6959930996198536,
+      "f1_certified": 0.8234258961893666,
+      "recall_denied": 0.49754675561637585,
+      "accuracy": 0.749439006161362,
+      "roc_auc_sd": 0.005206675742524572,
+      "params": {
+        "learning_rate": 0.05,
+        "max_depth": 3
+      }
+    },
+    {
+      "model": "Logistic regression",
+      "roc_auc": 0.7722435201704754,
+      "balanced_accuracy": 0.6952571852798866,
+      "macro_f1": 0.6785635803049637,
+      "f1_certified": 0.7553063275497048,
+      "recall_denied": 0.6900175333561409,
+      "accuracy": 0.6970175506417196,
+      "roc_auc_sd": 0.004941484168401297,
+      "params": {
+        "C": 1,
+        "class_weight": "balanced"
+      }
+    },
+    {
+      "model": "AdaBoost",
+      "roc_auc": 0.7714496244166048,
+      "balanced_accuracy": 0.6630799398960486,
+      "macro_f1": 0.6728256730007219,
+      "f1_certified": 0.8180637067772316,
+      "recall_denied": 0.4419992302429011,
+      "accuracy": 0.7373289942308732,
+      "roc_auc_sd": 0.004997930570594293,
+      "params": {
+        "learning_rate": 1.0,
+        "n_estimators": 100
+      }
+    },
+    {
+      "model": "Baseline: approve everyone",
+      "roc_auc": 0.5,
+      "balanced_accuracy": 0.5,
+      "macro_f1": 0.40045043260359436,
+      "f1_certified": 0.8009008652071887,
+      "recall_denied": 0.0,
+      "accuracy": 0.6679188179890149,
+      "roc_auc_sd": 0.0,
+      "params": {}
+    }
+  ],
+  "final_model": "Random forest",
+  "threshold": 0.6463012293928014,
+  "test": {
+    "Baseline: approve everyone": {
+      "accuracy": 0.6678440607012036,
+      "balanced_accuracy": 0.5,
+      "macro_f1": 0.40042356263236334,
+      "f1_certified": 0.8008471252647267,
+      "recall_certified": 1.0,
+      "recall_denied": 0.0,
+      "precision_certified": 0.6678440607012036
+    },
+    "Random forest @ 0.5": {
+      "accuracy": 0.7452904238618524,
+      "balanced_accuracy": 0.6784467883775106,
+      "macro_f1": 0.688535851666327,
+      "f1_certified": 0.8214907857339323,
+      "recall_certified": 0.8775710088148874,
+      "recall_denied": 0.4793225679401339,
+      "precision_certified": 0.7721475353326439,
+      "roc_auc": 0.7772071261291531
+    },
+    "Random forest @ 0.646": {
+      "accuracy": 0.7240973312401884,
+      "balanced_accuracy": 0.7001941890639231,
+      "macro_f1": 0.695541879668456,
+      "f1_certified": 0.7887831747621432,
+      "recall_certified": 0.7714005876591576,
+      "recall_denied": 0.6289877904686885,
+      "precision_certified": 0.8069672131147541,
+      "roc_auc": 0.7772071261291531
+    }
+  },
+  "test_ci95": {
+    "@0.5": {
+      "accuracy": [
+        0.7354788069073783,
+        0.7553636839351126
+      ],
+      "balanced_accuracy": [
+        0.6675743133312936,
+        0.6891144352858659
+      ],
+      "macro_f1": [
+        0.6770052224851074,
+        0.6997860457980793
+      ],
+      "f1_certified": [
+        0.8138887282122474,
+        0.829353728011749
+      ],
+      "recall_certified": [
+        0.868736891076047,
+        0.8863684124011351
+      ],
+      "recall_denied": [
+        0.45957267590122725,
+        0.49843896199693677
+      ],
+      "precision_certified": [
+        0.7611301014601763,
+        0.7828844550268864
+      ],
+      "roc_auc": [
+        0.7667427882628283,
+        0.7881564327683784
+      ]
+    },
+    "@thr": {
+      "accuracy": [
+        0.7142857142857143,
+        0.7341705913134484
+      ],
+      "balanced_accuracy": [
+        0.6892610584217833,
+        0.7108364913881732
+      ],
+      "macro_f1": [
+        0.6847098509794046,
+        0.7061907687980695
+      ],
+      "f1_certified": [
+        0.780008688683126,
+        0.7974850600829806
+      ],
+      "recall_certified": [
+        0.7597087813828545,
+        0.7828323352077012
+      ],
+      "recall_denied": [
+        0.6100343728257127,
+        0.6470616712990386
+      ],
+      "precision_certified": [
+        0.7963415872243649,
+        0.818125656279503
+      ],
+      "roc_auc": [
+        0.7667427882628283,
+        0.7881564327683784
+      ]
+    }
+  },
+  "by_continent_with": [
+    {
+      "g": "Asia",
+      "n": 5061,
+      "actual_certified_rate": 0.651057103339261,
+      "predicted_certified_rate": 0.630902983600079,
+      "false_approval_rate": 0.3782559456398641,
+      "false_denial_rate": 0.2336874051593323,
+      "accuracy": 0.7158664295593756
+    },
+    {
+      "g": "Europe",
+      "n": 1104,
+      "actual_certified_rate": 0.7916666666666666,
+      "predicted_certified_rate": 0.8414855072463768,
+      "false_approval_rate": 0.4826086956521739,
+      "false_denial_rate": 0.06407322654462243,
+      "accuracy": 0.8487318840579711
+    },
+    {
+      "g": "North America",
+      "n": 1021,
+      "actual_certified_rate": 0.633692458374143,
+      "predicted_certified_rate": 0.5132223310479922,
+      "false_approval_rate": 0.3181818181818182,
+      "false_denial_rate": 0.3740340030911901,
+      "accuracy": 0.6464250734573947
+    },
+    {
+      "g": "South America",
+      "n": 237,
+      "actual_certified_rate": 0.5822784810126582,
+      "predicted_certified_rate": 0.41350210970464135,
+      "false_approval_rate": 0.20202020202020202,
+      "false_denial_rate": 0.43478260869565216,
+      "accuracy": 0.6624472573839663
+    },
+    {
+      "g": "Africa",
+      "n": 154,
+      "actual_certified_rate": 0.7077922077922078,
+      "predicted_certified_rate": 0.6298701298701299,
+      "false_approval_rate": 0.35555555555555557,
+      "false_denial_rate": 0.25688073394495414,
+      "accuracy": 0.7142857142857143
+    },
+    {
+      "g": "Oceania",
+      "n": 67,
+      "actual_certified_rate": 0.6268656716417911,
+      "predicted_certified_rate": 0.582089552238806,
+      "false_approval_rate": 0.32,
+      "false_denial_rate": 0.2619047619047619,
+      "accuracy": 0.7164179104477612
+    }
+  ],
+  "ablation_without_continent": {
+    "cv_roc_auc_mean": 0.7676242076284496,
+    "threshold": 0.6427519529121333,
+    "test": {
+      "accuracy": 0.7115384615384616,
+      "balanced_accuracy": 0.684654589192148,
+      "macro_f1": 0.6808883995829118,
+      "f1_certified": 0.7797862778388095,
+      "recall_certified": 0.7647404505386876,
+      "recall_denied": 0.6045687278456086,
+      "precision_certified": 0.7954360228198859,
+      "roc_auc": 0.7595851436493734
+    },
+    "by_continent": [
+      {
+        "g": "Asia",
+        "n": 5061,
+        "actual_certified_rate": 0.651057103339261,
+        "predicted_certified_rate": 0.6435487057893697,
+        "false_approval_rate": 0.3986409966024915,
+        "false_denial_rate": 0.2251896813353566,
+        "accuracy": 0.7142857142857143
+      },
+      {
+        "g": "Europe",
+        "n": 1104,
+        "actual_certified_rate": 0.7916666666666666,
+        "predicted_certified_rate": 0.667572463768116,
+        "false_approval_rate": 0.34347826086956523,
+        "false_denial_rate": 0.2471395881006865,
+        "accuracy": 0.7327898550724637
+      },
+      {
+        "g": "North America",
+        "n": 1021,
+        "actual_certified_rate": 0.633692458374143,
+        "predicted_certified_rate": 0.6307541625857003,
+        "false_approval_rate": 0.44385026737967914,
+        "false_denial_rate": 0.26120556414219476,
+        "accuracy": 0.6718903036238981
+      },
+      {
+        "g": "South America",
+        "n": 237,
+        "actual_certified_rate": 0.5822784810126582,
+        "predicted_certified_rate": 0.5527426160337553,
+        "false_approval_rate": 0.32323232323232326,
+        "false_denial_rate": 0.2826086956521739,
+        "accuracy": 0.70042194092827
+      },
+      {
+        "g": "Africa",
+        "n": 154,
+        "actual_certified_rate": 0.7077922077922078,
+        "predicted_certified_rate": 0.6493506493506493,
+        "false_approval_rate": 0.3333333333333333,
+        "false_denial_rate": 0.22018348623853212,
+        "accuracy": 0.7467532467532467
+      },
+      {
+        "g": "Oceania",
+        "n": 67,
+        "actual_certified_rate": 0.6268656716417911,
+        "predicted_certified_rate": 0.582089552238806,
+        "false_approval_rate": 0.32,
+        "false_denial_rate": 0.2619047619047619,
+        "accuracy": 0.7164179104477612
+      }
+    ]
+  },
+  "permutation_importance": {
+    "education_of_employee": 0.14695262427193567,
+    "has_job_experience": 0.06443953849815551,
+    "continent": 0.031275957935732526,
+    "region_of_employment": 0.027152129039674566,
+    "unit_of_wage": 0.022032535347694494,
+    "annualized_wage": 0.004124808713742434,
+    "full_time_position": 0.0032084785861616893,
+    "requires_job_training": 0.0021578362848091006,
+    "no_of_employees": 0.0010524939253232723,
+    "yr_of_estab": -0.0005479495386177425
+  },
+  "versions": {
+    "python": "3.13.18",
+    "sklearn": "1.9.1",
+    "xgboost": "3.4.1",
+    "pandas": "3.0.5",
+    "numpy": "2.5.3"
+  }
+}

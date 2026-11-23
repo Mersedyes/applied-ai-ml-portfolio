@@ -16,6 +16,8 @@ data/
 *.pth
 *.pdf
 *.pptx
+# exception: original presentation decks, published deliberately
+!/[0-9][0-9]-*/presentation/*.pdf
 
 # Python / Jupyter
 __pycache__/

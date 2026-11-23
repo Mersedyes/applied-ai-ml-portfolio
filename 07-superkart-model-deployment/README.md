@@ -1,4 +1,4 @@
-# 07 · SuperKart: Sales Forecasting Model, API, and Front End
+# 07 · SuperKart: Sales Forecasting Model, API, Front End, and a 2026 Re-run
 
 **Question.** Can product and store attributes predict a product's total sales at a given store, and can that model be served reliably to business users?
 **Data.** 8,763 product–store records:
@@ -57,12 +57,46 @@ The request body carries 10 fields: `Product_Weight`, `Product_Sugar_Content`, `
 | No health or readiness endpoint | `GET /healthz` checking that the model loaded |
 | Leftover comments from another project's template | Clean up during the refactor |
 
-## Code
-The API and front-end source live in the two Hugging Face Space repositories above. To mirror them here:
+## 2026 re-run: traceable model selection
+The 2025 modeling notebook was not recovered. [`rerun_2026/superkart_rerun_2026.ipynb`](rerun_2026/superkart_rerun_2026.ipynb) is an executed notebook that rebuilds the model behind the API's exact 10-field contract and adds the missing provenance:
+- Selection by 5-fold CV on the training set (metric fixed in advance: RMSE), with the test set used once.
+- A leave-one-store-out generalization check.
+- A model card with the artifact's SHA-256.
+- The payload validation the API lacks.
 
-```bash
+Data cleaning found in the process: `reg` and `Regular` were the same sugar-content category, and each of the 4 stores has a fixed size, tier, and type.
+
+**Cross-validation (training set):**
+
+| Model | CV RMSE | CV R² |
+|---|---|---|
+| Predict the mean (baseline) | 1,063.7 | 0.00 |
+| Linear regression | 447.9 | 0.82 |
+| **Random forest (selected)** | **280.8 ± 23.9** | **0.930** |
+| XGBoost | 285.4 ± 22.0 | 0.928 |
+
+**Test set (selected model, used once):** RMSE 292.3 [263.4, 321.7], MAE 110.2, R² 0.925 [0.910, 0.939]. These are lower than the presentation's rounded R² ≈ 0.96, which could not be reproduced.
+
+What the re-run shows:
+- **The model choice was never the real problem.** Random forest and XGBoost are within one standard deviation on CV error, so deploying XGBoost was defensible. XGBoost's artifact is also far smaller: 186 kB deployed vs. 27 MB for this random forest. The problem was that the choice wasn't recorded. `rerun_2026/model_card.json` now ties the evaluated artifact's SHA-256, data hash, metrics, input schema, and library versions together. A deploy step can refuse any artifact whose hash differs.
+- **The model can't predict sales for a store it hasn't seen.** Holding out each store in turn, R² falls to between −0.45 and −30.7: worse than predicting the training mean. A random split hides this because every test row comes from a known store. The model is fit for the 4 existing stores only. The presentation's store-expansion recommendations ("Supermarket Type 1 expansion", "Tier 1 penetration") would need data from more stores to support them.
+- **Payload validation:** a `validate_payload` function returns field-level errors (HTTP 422) instead of an unhandled exception. It is tested in the notebook against the trained pipeline.
+
+## Presentation
+[`presentation/SuperKart_Presentation.pdf`](presentation/SuperKart_Presentation.pdf) is my submitted deck (29 slides), unedited. Its final-model slides (random forest, R² ≈ 0.96) don't match the deployed artifact; see the re-audit and re-run above.
+
+## Code
+The API and front-end source live in the two Hugging Face Space repositories above. To mirror them here (run on your own machine):
+
+```zsh
 git clone https://huggingface.co/spaces/mersedyes/SuperKart-Sales-Prediction api
 git clone https://huggingface.co/spaces/mersedyes/SuperKart-Frontend frontend
 rm -rf api/.git frontend/.git
-# keep backend_files/final_model.joblib out of git; it is ignored by .gitignore
 ```
+
+`backend_files/final_model.joblib` stays out of git; `*.joblib` is gitignored.
+
+## Files
+- [`rerun_2026/superkart_rerun_2026.ipynb`](rerun_2026/superkart_rerun_2026.ipynb): executed 2026 re-run (needs `data/SuperKart.csv` to re-execute).
+- [`rerun_2026/model_card.json`](rerun_2026/model_card.json): model card with artifact hash, metrics, schema, and versions.
+- [`presentation/SuperKart_Presentation.pdf`](presentation/SuperKart_Presentation.pdf): original 2025 presentation.

@@ -1,0 +1,97 @@
+{
+  "model_name": "superkart-sales-regressor",
+  "version": "2026.11-rerun",
+  "created_utc": "2026-11-23T05:49:35+00:00",
+  "estimator": "RandomForestRegressor",
+  "hyperparameters": {
+    "max_depth": null,
+    "min_samples_leaf": 5
+  },
+  "artifact_sha256": "605be35ba3681ed4cf2dd0077f82a4c354da8fccff92b7f438a194764c1beb50",
+  "artifact_bytes": 27042026,
+  "training_data_sha256": "b12ec41668e69d71d64ca96f2be78a011087f2a9cac6aba6e5cc920544b21ab2",
+  "n_train": 6134,
+  "n_test": 2629,
+  "input_schema": {
+    "Product_Weight": "float",
+    "Product_Sugar_Content": "str",
+    "Product_Allocated_Area": "float",
+    "Product_MRP": "float",
+    "Store_Size": "str",
+    "Store_Location_City_Type": "str",
+    "Store_Type": "str",
+    "Product_Id_char": "str",
+    "Store_Age_Years": "int",
+    "Product_Type_Category": "str"
+  },
+  "target": "Product_Store_Sales_Total",
+  "selection": "lowest 5-fold CV RMSE on training set",
+  "metrics": {
+    "cv": {
+      "rmse": 280.7696847456603,
+      "rmse_sd": 23.904471279060633,
+      "mae": 107.0190807687492,
+      "r2": 0.9299252528243948
+    },
+    "test": {
+      "rmse": 292.3420849273346,
+      "mae": 110.23620861326627,
+      "r2": 0.9253167684100909
+    },
+    "test_ci95": {
+      "rmse": [
+        263.40076374953065,
+        321.74469017389504
+      ],
+      "mae": [
+        100.34908009330478,
+        120.96318230698145
+      ],
+      "r2": [
+        0.9095598458873159,
+        0.9390290703892878
+      ]
+    },
+    "leave_one_store_out": [
+      {
+        "held_out_store": "OUT004",
+        "n": 4676,
+        "rmse": 1739.8837102799405,
+        "mae": 1636.271775114159,
+        "r2": -12.808214390568445
+      },
+      {
+        "held_out_store": "OUT001",
+        "n": 1586,
+        "rmse": 1088.603788531916,
+        "mae": 945.4951030822211,
+        "r2": -0.44901398596397213
+      },
+      {
+        "held_out_store": "OUT003",
+        "n": 1349,
+        "rmse": 1733.5259264868305,
+        "mae": 1565.6667346945067,
+        "r2": -5.551080273670144
+      },
+      {
+        "held_out_store": "OUT002",
+        "n": 1152,
+        "rmse": 2603.5230040628753,
+        "mae": 2537.9393657683518,
+        "r2": -30.66621315913947
+      }
+    ]
+  },
+  "limitations": [
+    "Trained on 4 stores; see leave-one-store-out results before using for a new store.",
+    "Pickle artifact: load only if its SHA-256 matches this card."
+  ],
+  "versions": {
+    "python": "3.13.18",
+    "sklearn": "1.9.1",
+    "xgboost": "3.4.1",
+    "pandas": "3.0.5",
+    "numpy": "2.5.3"
+  }
+}

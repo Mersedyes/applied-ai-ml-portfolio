@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -22,6 +23,10 @@ SKIP_DIRS = {".git", ".venv", "venv", "__pycache__", ".pytest_cache", ".ipynb_ch
 BLOCKED_EXT = {".csv", ".tsv", ".xlsx", ".npy", ".npz", ".zip", ".keras", ".h5", ".joblib",
                ".pkl", ".pickle", ".pt", ".pth", ".pptx", ".pdf", ".parquet"}
 TEXT_EXT = {".py", ".md", ".ipynb", ".txt", ".yml", ".yaml", ".toml", ".cfg", ".cff", ".json", ".sh"}
+# The only binary files allowed: the original presentation PDFs, one folder per project.
+# They are published deliberately and as submitted (see README "Provenance and scope").
+ALLOWED_BINARY = re.compile(r"^\d{2}-[^/]+/presentation/[^/]+\.pdf$")
+MAX_PRESENTATION_MB = 10
 NOTICE_PATTERNS = [
     re.compile(r"proprietary content", re.I),
     re.compile(r"meant for personal use", re.I),
@@ -38,7 +43,25 @@ SECRET_PATTERNS = [
 SELF_EXEMPT = {"check_repo.py", "test_check_repo.py"}  # these files contain the patterns on purpose
 
 
+def _git_publishable(root: Path) -> list[Path] | None:
+    """Files git would publish (tracked + untracked-not-ignored), or None outside a git repo."""
+    if not (root / ".git").exists():
+        return None
+    try:
+        out = subprocess.run(["git", "-C", str(root), "ls-files", "-z", "--cached", "--others",
+                              "--exclude-standard"], capture_output=True, check=True).stdout
+    except (OSError, subprocess.CalledProcessError):
+        return None
+    return [root / f for f in out.decode("utf-8").split("\0") if f and (root / f).is_file()]
+
+
 def iter_files(root: Path):
+    """In a git repo, check exactly what git would publish (so gitignored local data is fine);
+    otherwise walk the tree."""
+    files = _git_publishable(root)
+    if files is not None:
+        yield from files
+        return
     for p in root.rglob("*"):
         if p.is_file() and not any(part in SKIP_DIRS for part in p.relative_to(root).parts):
             yield p
@@ -51,6 +74,10 @@ def check(root: Path) -> list[str]:
         size_mb = p.stat().st_size / 1_048_576
         if size_mb > MAX_MB:
             problems.append(f"too large ({size_mb:.1f} MB > {MAX_MB} MB): {rel}")
+        if ALLOWED_BINARY.match(rel):
+            if size_mb > MAX_PRESENTATION_MB:
+                problems.append(f"presentation too large ({size_mb:.1f} MB > {MAX_PRESENTATION_MB} MB): {rel}")
+            continue
         if p.suffix.lower() in BLOCKED_EXT:
             problems.append(f"blocked file type {p.suffix}: {rel}")
             continue

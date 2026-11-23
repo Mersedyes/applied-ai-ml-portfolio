@@ -43,5 +43,21 @@ Results from my submitted presentation:
   - Separate retrieval metrics.
   - Paired comparison across base, prompt-engineered, and RAG systems.
 
+## 2026 rebuild (to run on a GPU)
+The submitted notebook was not recovered. [`rerun_2026/medical_rag_2026.ipynb`](rerun_2026/medical_rag_2026.ipynb) rebuilds the same system for Colab and implements the better design above:
+- **Same passages for every system.** Base, prompt-engineered, and RAG answers are all judged against the same retrieved passages for each question, so the comparison is fair.
+- **A blind judge from another model family.** Llama 3.1 8B (GGUF) judges Mistral's answers. It is named in the config and never sees which system wrote an answer.
+- **Retrieval scored on its own:** hit@k against reference pages you label.
+- **Paired statistics:** per-question RAG − base differences with bootstrap intervals, instead of "significant."
+- **Human calibration:** a blind rating CSV, plus weighted Cohen's κ between judge and human once ratings exist.
+- **Everything recorded:** models, chunking, temperature, seed, and library versions are saved to `results.json`.
+
+**Status: not yet executed.** It needs a Colab GPU runtime and your copy of the manual. [`rerun_2026/smoke_test.py`](rerun_2026/smoke_test.py) runs it end to end with stub models and a synthetic PDF. That verifies chunking, indexing, retrieval, judge parsing, statistics, and the calibration step. It cannot verify the CUDA build, model downloads, or real outputs; those are checked on the first Colab run.
+
+## Presentation
+[`presentation/Medical_RAG_Presentation.pdf`](presentation/Medical_RAG_Presentation.pdf) is my submitted deck (17 slides), unedited.
+
 ## Files
-Notebook to be added. The submitted RAG notebook was not recovered; the configuration above is enough to rebuild it, and the evaluation will be re-run under the improved design.
+- [`rerun_2026/medical_rag_2026.ipynb`](rerun_2026/medical_rag_2026.ipynb): Colab notebook (outputs added after it is run).
+- [`rerun_2026/smoke_test.py`](rerun_2026/smoke_test.py): stub end-to-end test of the notebook's logic.
+- [`presentation/Medical_RAG_Presentation.pdf`](presentation/Medical_RAG_Presentation.pdf): original 2025 presentation.

@@ -37,5 +37,9 @@ Accuracy 0.82 (majority-class baseline: 0.796); macro-F1 0.74.
   - Calibrate predicted probabilities.
   - Report confidence intervals (only 407 churners in the test set).
 
+## Presentation
+[`presentation/Bank_Churn_Presentation.pdf`](presentation/Bank_Churn_Presentation.pdf) is my submitted deck (24 slides), unedited.
+
 ## Files
 - [`bank_churn_neural_network.ipynb`](bank_churn_neural_network.ipynb): cleaned notebook (course instructions removed; code and outputs unchanged).
+- [`presentation/Bank_Churn_Presentation.pdf`](presentation/Bank_Churn_Presentation.pdf): original 2025 presentation.

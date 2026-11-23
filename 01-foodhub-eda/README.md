@@ -29,5 +29,9 @@ Recomputed from the raw data in November 2026; consistent with the notebook outp
 - **Lesson:** reported numbers should be produced from the same executed analysis, not transcribed by hand into slides. See [`docs/evaluation-audit.md`](../docs/evaluation-audit.md).
 - **Analytical limit:** weekday vs. weekend is confounded with order volume and staffing, which this dataset cannot separate. The comparison is descriptive, not causal.
 
+## Presentation
+[`presentation/FoodHub_EDA_Presentation.pdf`](presentation/FoodHub_EDA_Presentation.pdf) is my submitted deck (32 slides), unedited. Its weekday/weekend delivery finding and top-three cuisine list are corrected above.
+
 ## Files
 - [`foodhub_eda.ipynb`](foodhub_eda.ipynb): cleaned notebook (course instructions removed; code and outputs unchanged). This is the last saved `.ipynb` revision; minor final edits existed only in an exported PDF.
+- [`presentation/FoodHub_EDA_Presentation.pdf`](presentation/FoodHub_EDA_Presentation.pdf): original 2025 presentation.
