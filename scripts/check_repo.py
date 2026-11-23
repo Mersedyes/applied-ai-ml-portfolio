@@ -1,0 +1,106 @@
+#!/usr/bin/env python3
+"""Pre-publish checks for this repository.
+
+Fails (exit 1) if the working tree contains:
+  * files larger than MAX_MB;
+  * data, model, or slide files that must not be redistributed;
+  * course licensing notices copied in by mistake;
+  * strings that look like credentials;
+  * notebooks that do not validate against the nbformat schema.
+
+Usage:  python scripts/check_repo.py [ROOT]
+"""
+from __future__ import annotations
+
+import json
+import re
+import sys
+from pathlib import Path
+
+MAX_MB = 25
+SKIP_DIRS = {".git", ".venv", "venv", "__pycache__", ".pytest_cache", ".ipynb_checkpoints", "node_modules"}
+BLOCKED_EXT = {".csv", ".tsv", ".xlsx", ".npy", ".npz", ".zip", ".keras", ".h5", ".joblib",
+               ".pkl", ".pickle", ".pt", ".pth", ".pptx", ".pdf", ".parquet"}
+TEXT_EXT = {".py", ".md", ".ipynb", ".txt", ".yml", ".yaml", ".toml", ".cfg", ".cff", ".json", ".sh"}
+NOTICE_PATTERNS = [
+    re.compile(r"proprietary content", re.I),
+    re.compile(r"meant for personal use", re.I),
+    re.compile(r"unauthorized use or distribution", re.I),
+]
+SECRET_PATTERNS = [
+    re.compile(r"hf_[A-Za-z0-9]{30,}"),
+    # OpenAI-style keys; the lookbehind and alnum-only body skip sklearn's HTML CSS classes (#sk-container-id-1)
+    re.compile(r"(?<![\w.#-])sk-(?:proj-)?[A-Za-z0-9]{20,}"),
+    re.compile(r"AKIA[0-9A-Z]{16}"),
+    re.compile(r"ghp_[A-Za-z0-9]{36}"),
+    re.compile(r"-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----"),
+]
+SELF_EXEMPT = {"check_repo.py", "test_check_repo.py"}  # these files contain the patterns on purpose
+
+
+def iter_files(root: Path):
+    for p in root.rglob("*"):
+        if p.is_file() and not any(part in SKIP_DIRS for part in p.relative_to(root).parts):
+            yield p
+
+
+def check(root: Path) -> list[str]:
+    problems: list[str] = []
+    for p in iter_files(root):
+        rel = p.relative_to(root).as_posix()
+        size_mb = p.stat().st_size / 1_048_576
+        if size_mb > MAX_MB:
+            problems.append(f"too large ({size_mb:.1f} MB > {MAX_MB} MB): {rel}")
+        if p.suffix.lower() in BLOCKED_EXT:
+            problems.append(f"blocked file type {p.suffix}: {rel}")
+            continue
+        if p.suffix.lower() not in TEXT_EXT or p.name in SELF_EXEMPT:
+            continue
+        try:
+            text = p.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            problems.append(f"not UTF-8 text: {rel}")
+            continue
+        for pat in NOTICE_PATTERNS:
+            if pat.search(text):
+                problems.append(f"course licensing notice ('{pat.pattern}'): {rel}")
+        for pat in SECRET_PATTERNS:
+            if pat.search(text):
+                problems.append(f"possible secret ({pat.pattern[:12]}…): {rel}")
+        if p.suffix == ".ipynb":
+            problems.extend(_check_notebook(text, rel))
+    return problems
+
+
+def _check_notebook(text: str, rel: str) -> list[str]:
+    try:
+        nb = json.loads(text)
+    except json.JSONDecodeError as exc:
+        return [f"invalid JSON notebook ({exc.msg}): {rel}"]
+    if "widgets" in nb.get("metadata", {}):
+        return [f"notebook has widget metadata (GitHub may not render it): {rel}"]
+    try:
+        import nbformat
+    except ImportError:
+        return []  # schema check optional when nbformat is absent
+    try:
+        nbformat.validate(nbformat.from_dict(nb))
+    except Exception as exc:  # nbformat.ValidationError
+        return [f"notebook fails nbformat validation ({str(exc).splitlines()[0]}): {rel}"]
+    return []
+
+
+def main(argv: list[str]) -> int:
+    root = Path(argv[1] if len(argv) > 1 else Path(__file__).resolve().parents[1])
+    if not root.is_dir():
+        print(f"not a directory: {root}", file=sys.stderr)
+        return 2
+    problems = check(root)
+    for msg in problems:
+        print(f"FAIL  {msg}")
+    print(f"{'FAILED' if problems else 'OK'}: {len(problems)} problem(s) in {root}")
+    return 1 if problems else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv))

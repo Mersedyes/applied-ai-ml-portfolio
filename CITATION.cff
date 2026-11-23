@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you reference this work, please cite it as below."
+type: software
+title: "Applied AI/ML Portfolio: Seven Projects with an Evaluation Re-audit"
+authors:
+  - family-names: Livingston
+    given-names: Mersedyes
+version: 1.0.0
+date-released: 2026-11-23
+repository-code: "https://github.com/Mersedyes/applied-ai-ml-portfolio"
+keywords:
+  - machine learning
+  - model evaluation
+  - retrieval-augmented generation
+  - MLOps
+  - AI governance

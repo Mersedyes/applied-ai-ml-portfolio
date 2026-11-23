@@ -1,0 +1,35 @@
+# Data, models, and slides are not redistributed (see README "Provenance and scope")
+data/
+*.csv
+*.tsv
+*.xlsx
+*.npy
+*.npz
+*.zip
+*.parquet
+*.keras
+*.h5
+*.joblib
+*.pkl
+*.pickle
+*.pt
+*.pth
+*.pdf
+*.pptx
+
+# Python / Jupyter
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Secrets
+.env
+*.env
