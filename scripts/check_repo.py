@@ -6,12 +6,14 @@ Fails (exit 1) if the working tree contains:
   * data, model, or slide files that must not be redistributed;
   * course licensing notices copied in by mistake;
   * strings that look like credentials;
+  * RAG result tables with columns that carry the manual's text (raw judge output, passages);
   * notebooks that do not validate against the nbformat schema.
 
 Usage:  python scripts/check_repo.py [ROOT]
 """
 from __future__ import annotations
 
+import csv
 import json
 import re
 import subprocess
@@ -21,12 +23,20 @@ from pathlib import Path
 MAX_MB = 25
 SKIP_DIRS = {".git", ".venv", "venv", "__pycache__", ".pytest_cache", ".ipynb_checkpoints", "node_modules"}
 BLOCKED_EXT = {".csv", ".tsv", ".xlsx", ".npy", ".npz", ".zip", ".keras", ".h5", ".joblib",
-               ".pkl", ".pickle", ".pt", ".pth", ".pptx", ".pdf", ".parquet"}
+               ".pkl", ".pickle", ".pt", ".pth", ".pptx", ".pdf", ".parquet",
+               ".sqlite3", ".sqlite", ".db", ".gguf", ".bin", ".safetensors"}
 TEXT_EXT = {".py", ".md", ".ipynb", ".txt", ".yml", ".yaml", ".toml", ".cfg", ".cff", ".json", ".sh"}
 # The only binary files allowed: the original presentation PDFs, one folder per project.
 # They are published deliberately and as submitted (see README "Provenance and scope").
 ALLOWED_BINARY = re.compile(r"^\d{2}-[^/]+/presentation/[^/]+\.pdf$")
 MAX_PRESENTATION_MB = 10
+# Small generated result tables are allowed in exactly one place: the RAG run's outputs
+# (model answers and judge scores, no source text). Everything else that is .csv stays blocked.
+ALLOWED_RESULTS = re.compile(r"^05-medical-rag-llm/rerun_2026/rag_outputs/[^/]+\.csv$")
+MAX_RESULTS_MB = 2
+# Columns that carry source text and so must never be published: the raw judge output
+# quotes the copyrighted manual verbatim, and retrieved passages are the manual itself.
+BLOCKED_RESULT_COLUMNS = {"judge_raw", "context", "contexts", "passage", "passages", "chunk", "chunk_text"}
 NOTICE_PATTERNS = [
     re.compile(r"proprietary content", re.I),
     re.compile(r"meant for personal use", re.I),
@@ -78,6 +88,11 @@ def check(root: Path) -> list[str]:
             if size_mb > MAX_PRESENTATION_MB:
                 problems.append(f"presentation too large ({size_mb:.1f} MB > {MAX_PRESENTATION_MB} MB): {rel}")
             continue
+        if ALLOWED_RESULTS.match(rel):
+            if size_mb > MAX_RESULTS_MB:
+                problems.append(f"result table too large ({size_mb:.1f} MB > {MAX_RESULTS_MB} MB): {rel}")
+            problems.extend(_check_result_table(p, rel))
+            continue
         if p.suffix.lower() in BLOCKED_EXT:
             problems.append(f"blocked file type {p.suffix}: {rel}")
             continue
@@ -97,6 +112,16 @@ def check(root: Path) -> list[str]:
         if p.suffix == ".ipynb":
             problems.extend(_check_notebook(text, rel))
     return problems
+
+
+def _check_result_table(path: Path, rel: str) -> list[str]:
+    try:
+        with path.open(encoding="utf-8", newline="") as fh:
+            header = next(csv.reader(fh), [])
+    except UnicodeDecodeError:
+        return [f"result table is not UTF-8: {rel}"]
+    blocked = sorted({c.strip().lower() for c in header} & BLOCKED_RESULT_COLUMNS)
+    return [f"result table has source-text column(s) {blocked}: {rel}"] if blocked else []
 
 
 def _check_notebook(text: str, rel: str) -> list[str]:

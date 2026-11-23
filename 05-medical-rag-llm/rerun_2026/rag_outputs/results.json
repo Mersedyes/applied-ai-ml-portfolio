@@ -1,0 +1,91 @@
+{
+  "config": {
+    "generator": [
+      "TheBloke/Mistral-7B-Instruct-v0.2-GGUF",
+      "mistral-7b-instruct-v0.2.Q4_K_M.gguf"
+    ],
+    "judge": [
+      "bartowski/Meta-Llama-3.1-8B-Instruct-GGUF",
+      "Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf"
+    ],
+    "chunk_size": 500,
+    "chunk_overlap": 100,
+    "top_k": 5,
+    "temperature": 0.0,
+    "top_p": 0.9,
+    "seed": 1,
+    "n_chunks": 35067
+  },
+  "judge_means": {
+    "groundedness": {
+      "base": 2.4,
+      "prompted": 2.4,
+      "rag": 3.0
+    },
+    "relevance": {
+      "base": 3.0,
+      "prompted": 3.0,
+      "rag": 3.0
+    }
+  },
+  "paired_rag_minus_base": [
+    {
+      "metric": "groundedness",
+      "n_questions": 5,
+      "mean_diff": 0.6,
+      "ci95": [
+        0.0,
+        1.8
+      ],
+      "rag_better": 1,
+      "tied": 4,
+      "rag_worse": 0
+    },
+    {
+      "metric": "relevance",
+      "n_questions": 5,
+      "mean_diff": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "rag_better": 0,
+      "tied": 5,
+      "rag_worse": 0
+    }
+  ],
+  "retrieval": [
+    {
+      "id": "Q1",
+      "labeled": false,
+      "hit@5": null
+    },
+    {
+      "id": "Q2",
+      "labeled": false,
+      "hit@5": null
+    },
+    {
+      "id": "Q3",
+      "labeled": false,
+      "hit@5": null
+    },
+    {
+      "id": "Q4",
+      "labeled": false,
+      "hit@5": null
+    },
+    {
+      "id": "Q5",
+      "labeled": false,
+      "hit@5": null
+    }
+  ],
+  "versions": {
+    "python": "3.13.16",
+    "llama_cpp": "0.3.37",
+    "chromadb": "1.5.9",
+    "sentence_transformers": "5.7.0",
+    "pandas": "2.2.3"
+  }
+}

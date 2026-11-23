@@ -63,6 +63,9 @@ with tempfile.TemporaryDirectory() as d:
     test = copy.deepcopy(nb)
     install_idx = next(i for i, cell in enumerate(test.cells) if cell.cell_type == "code" and "pip install" in cell.source)
     test.cells[install_idx] = nbf.v4.new_code_cell(STUBS)
+    for i, cell in enumerate(test.cells):  # the CUDA 12 preload cell needs a GPU runtime: skip it
+        if cell.cell_type == "code" and "CUDA12_LIBS" in cell.source:
+            test.cells[i] = nbf.v4.new_code_cell("pass  # CUDA preload skipped in smoke test")
     NotebookClient(test, timeout=600, kernel_name="python3", resources={"metadata": {"path": str(d)}}).execute()
 
     out = d / "rag_outputs"

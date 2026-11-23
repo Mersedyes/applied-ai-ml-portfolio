@@ -18,6 +18,15 @@ data/
 *.pptx
 # exception: original presentation decks, published deliberately
 !/[0-9][0-9]-*/presentation/*.pdf
+# exception: small RAG result tables (answers, parsed judge scores, rating sheets)
+!/05-medical-rag-llm/rerun_2026/rag_outputs/*.csv
+# ...but not the notebook's raw judge table: its judge_raw column quotes the manual
+/05-medical-rag-llm/rerun_2026/rag_outputs/judge_scores.csv
+# never publish the vector index: it stores the manual's text
+chroma/
+*.sqlite3
+*.sqlite
+*.db
 
 # Python / Jupyter
 __pycache__/

@@ -37,6 +37,24 @@ def test_presentation_pdfs_allowed_only_in_project_presentation_folders(tmp_path
     assert any("stray.pdf" in p for p in problems) and any("data.csv" in p for p in problems)
 
 
+def test_rag_result_csvs_allowed_only_in_rag_outputs(tmp_path):
+    out = tmp_path / "05-medical-rag-llm" / "rerun_2026" / "rag_outputs"
+    out.mkdir(parents=True)
+    (out / "judge_scores.csv").write_text("id,score\n")
+    assert cr.check(tmp_path) == []
+    (tmp_path / "05-medical-rag-llm" / "rerun_2026" / "elsewhere.csv").write_text("a\n")
+    assert any("elsewhere.csv" in p for p in cr.check(tmp_path))
+
+
+def test_rag_result_tables_must_not_carry_source_text(tmp_path):
+    out = tmp_path / "05-medical-rag-llm" / "rerun_2026" / "rag_outputs"
+    out.mkdir(parents=True)
+    (out / "judge_scores.csv").write_text('id,system,metric,score,judge_raw\nQ1,rag,relevance,3,"quoted text"\n')
+    (out / "answers.csv").write_text("id,system,answer\nQ1,rag,an answer\n")
+    problems = cr.check(tmp_path)
+    assert len(problems) == 1 and "judge_raw" in problems[0] and "judge_scores.csv" in problems[0]
+
+
 def test_detects_secret_like_strings(tmp_path):
     (tmp_path / "x.py").write_text('TOKEN = "hf_' + "a" * 34 + '"\n')
     (tmp_path / "y.py").write_text('KEY = "sk-' + "B" * 40 + '"\n')

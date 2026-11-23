@@ -1,0 +1,16 @@
+item,id,system
+item-000,Q2,base
+item-001,Q3,prompted
+item-002,Q3,base
+item-003,Q1,rag
+item-004,Q4,prompted
+item-005,Q2,prompted
+item-006,Q1,prompted
+item-007,Q5,prompted
+item-008,Q1,base
+item-009,Q5,rag
+item-010,Q4,base
+item-011,Q3,rag
+item-012,Q5,base
+item-013,Q4,rag
+item-014,Q2,rag

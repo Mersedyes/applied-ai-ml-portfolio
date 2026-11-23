@@ -4,7 +4,7 @@
 
 Seven applied machine-learning projects, from exploratory analysis to a deployed prediction API and an LLM retrieval system, completed between January and August 2025. Each includes the original analysis and the presentation I gave.
 
-In November 2026 I re-audited each one for **evaluation validity**: does the reported result actually support the claim being made? I then re-ran three of them (personal loan, visa certification, SuperKart) under a corrected protocol.
+In November 2026 I re-audited each one for **evaluation validity**: does the reported result actually support the claim being made? I then re-ran three of them (personal loan, visa certification, SuperKart) under a corrected protocol, and rebuilt and ran the medical RAG system with a corrected evaluation design.
 
 ## Why the re-audit
 
@@ -13,7 +13,7 @@ My professional work is making software systems *prove* what they claim: pipelin
 - **Metrics without baselines.** Two classifiers scored well on headline metrics yet barely beat (or fell below) a model that predicts the majority class every time.
 - **Test-set reuse.** Hyperparameters chosen by test-set performance, which turns a held-out estimate into an optimistic one.
 - **Perfect scores on small test sets.** 100% test accuracy on 95 images says less than it appears to.
-- **Measurement validity in LLM evaluation.** An LLM-as-judge rubric that does not cleanly apply to the baseline it is compared against.
+- **Measurement validity in LLM evaluation.** An LLM-as-judge rubric that does not cleanly apply to the baseline it is compared against. When I ran the corrected design, the judge broke its own output format and gave every answer full relevance marks.
 - **Deployment traceability.** A deployed model artifact that differs from the model the documentation reports.
 - **Unstated generalization limits and amplified disparities.**
   - A sales model with R² 0.93 on a random split cannot predict a store it hasn't seen.
@@ -29,7 +29,7 @@ These gaps are the questions I want to study: how organizations can **verify, do
 | 2 | [Personal-loan propensity](02-personal-loan-classification/) | Decision trees, pruning; **2026 re-run** with LR, KNN, random forest, CV-only selection, bootstrap CIs | Re-run (random forest): test recall 0.861, precision 0.961 | 2025 models were tuned on the test set; the re-run fixes the protocol |
 | 3 | [Visa certification](03-easyvisa-ensemble-classification/) | Bagging, boosting, stacking; **2026 re-run** with baselines, balanced metrics, per-group error rates, ablation | Re-run (random forest): balanced accuracy 0.700, ROC-AUC 0.777 | With continent as an input, false-denial rates range 6%–44% by continent; without it, 22%–28% at −1.5 pts balanced accuracy |
 | 4 | [Bank churn](04-bank-churn-neural-network/) | Keras MLPs, SGD/Adam, dropout, SMOTE | Test churn recall 0.65, precision 0.55 | Model choice not consistent with the stated metric |
-| 5 | [Medical RAG assistant](05-medical-rag-llm/) | Mistral-7B, MiniLM embeddings, ChromaDB, LLM-as-judge; **2026 rebuild** for Colab | Groundedness 1.6 → 2.6 (0–3 scale, as presented) | n = 5; judge unnamed; rubric validity. The rebuild fixes the design (not yet executed) |
+| 5 | [Medical RAG assistant](05-medical-rag-llm/) | Mistral-7B, MiniLM embeddings, ChromaDB, LLM-as-judge; **2026 rebuild**, run on a Colab GPU | 2026 run: RAG groundedness ≥ base on all 5 questions; paired gain +0.36 to +1.00 depending on judge parsing, every 95% CI includes 0 | Judge broke its output format (14 of 15 groundedness ratings); relevance 3/3 for every answer. Human calibration and retrieval labels pending |
 | 6 | [Helmet detection](06-helmet-detection-cv/) | CNN, VGG-16 transfer learning, augmentation | Test accuracy 1.00 (n = 95) | Ceiling effect; 95% bound ≈ 96.8% |
 | 7 | [SuperKart sales API](07-superkart-model-deployment/) | sklearn pipelines, RF/XGBoost, Flask, Docker, Streamlit; **2026 re-run** with model card + artifact hash | Re-run: test R² 0.925, RMSE 292 | Deployed artifact ≠ documented model; leave-one-store-out R² < 0 for every store |
 
@@ -56,7 +56,7 @@ These projects were completed in **The University of Texas at Austin Post Gradua
 ├── docs/evaluation-audit.md   cross-project findings and open research questions
 ├── tools/clean_notebook.py    removes course scaffolding from notebooks
 ├── scripts/check_repo.py      pre-publish checks (sizes, data files, licensing notices, secrets)
-├── tests/                     pytest suite (cleaner, checker, loan re-run)
+├── tests/                     pytest suite (cleaner, checker, loan re-run, judge re-scoring)
 └── .github/workflows/checks.yml   runs the tests and checks on every push
 ```
 
@@ -68,10 +68,11 @@ python3 -m pytest -q
 python3 scripts/check_repo.py .
 ```
 
-The tests cover the notebook cleaner, the pre-publish checker, and the Personal Loan re-run. The checker fails on:
+The tests cover the notebook cleaner, the pre-publish checker, the Personal Loan re-run, and the RAG judge re-scoring. The checker fails on:
 - data files, files over 25 MB, PDFs outside a project's `presentation/` folder;
 - course licensing notices in text files;
-- secret-like strings.
+- secret-like strings;
+- RAG result tables with columns that carry the manual's text (raw judge output, passages).
 
 In a git repo it checks exactly what git would publish, so gitignored local data is allowed. The RAG notebook has its own stub smoke test (`05-medical-rag-llm/rerun_2026/smoke_test.py`).
 

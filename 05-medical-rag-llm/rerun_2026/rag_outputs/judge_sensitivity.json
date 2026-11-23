@@ -1,0 +1,127 @@
+{
+  "n_judgements": 30,
+  "format_compliance": {
+    "single_json_object": 16,
+    "multiple_json_objects": 14,
+    "truncated_at_token_limit": 13,
+    "unparseable": 0
+  },
+  "judge_means_by_aggregation": {
+    "first": {
+      "groundedness": {
+        "base": 2.4,
+        "prompted": 2.4,
+        "rag": 3.0
+      },
+      "relevance": {
+        "base": 3.0,
+        "prompted": 3.0,
+        "rag": 3.0
+      }
+    },
+    "mean": {
+      "groundedness": {
+        "base": 2.57,
+        "prompted": 2.28,
+        "rag": 2.93
+      },
+      "relevance": {
+        "base": 3.0,
+        "prompted": 3.0,
+        "rag": 3.0
+      }
+    },
+    "min": {
+      "groundedness": {
+        "base": 1.8,
+        "prompted": 1.2,
+        "rag": 2.8
+      },
+      "relevance": {
+        "base": 3.0,
+        "prompted": 3.0,
+        "rag": 3.0
+      }
+    }
+  },
+  "paired_rag_minus_base": [
+    {
+      "metric": "groundedness",
+      "aggregation": "first",
+      "n_questions": 5,
+      "mean_diff": 0.6,
+      "ci95": [
+        0.0,
+        1.8
+      ],
+      "rag_better": 1,
+      "tied": 4,
+      "rag_worse": 0
+    },
+    {
+      "metric": "relevance",
+      "aggregation": "first",
+      "n_questions": 5,
+      "mean_diff": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "rag_better": 0,
+      "tied": 5,
+      "rag_worse": 0
+    },
+    {
+      "metric": "groundedness",
+      "aggregation": "mean",
+      "n_questions": 5,
+      "mean_diff": 0.363,
+      "ci95": [
+        0.0,
+        0.79
+      ],
+      "rag_better": 2,
+      "tied": 3,
+      "rag_worse": 0
+    },
+    {
+      "metric": "relevance",
+      "aggregation": "mean",
+      "n_questions": 5,
+      "mean_diff": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "rag_better": 0,
+      "tied": 5,
+      "rag_worse": 0
+    },
+    {
+      "metric": "groundedness",
+      "aggregation": "min",
+      "n_questions": 5,
+      "mean_diff": 1.0,
+      "ci95": [
+        0.0,
+        2.2
+      ],
+      "rag_better": 2,
+      "tied": 3,
+      "rag_worse": 0
+    },
+    {
+      "metric": "relevance",
+      "aggregation": "min",
+      "n_questions": 5,
+      "mean_diff": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "rag_better": 0,
+      "tied": 5,
+      "rag_worse": 0
+    }
+  ]
+}

@@ -23,7 +23,7 @@ In 2025 I completed seven applied ML projects spanning EDA, classical ML, ensemb
    - The test set used once, with bootstrap confidence intervals.
    - Data hash and library versions recorded.
 
-   The medical RAG system was rebuilt with a corrected evaluation design; it needs a GPU and has not yet been executed.
+   The medical RAG system was rebuilt with a corrected evaluation design and run on a Colab T4 GPU: [`rerun_2026/medical_rag_2026.ipynb`](../05-medical-rag-llm/rerun_2026/medical_rag_2026.ipynb).
 
 ## Findings
 
@@ -35,7 +35,7 @@ In 2025 I completed seven applied ML projects spanning EDA, classical ML, ensemb
 | F2 | **Test-set reuse** | Personal loan | Pre-pruning hyperparameters selected by *test* recall; pruning curve read on test recall. **Re-run** with CV-only selection: random forest, test recall 0.861 (95% CI 0.802–0.916) at precision 0.961. |
 | F3 | **Selection inconsistent with the reported metric** | Bank churn | Selected model's validation recall 0.622 vs. 0.705 for an alternative with a smaller train–validation gap; only recall was tabulated |
 | F4 | **Ceiling effect on a small test set** | Helmet detection | 95/95 correct; 95% upper bound on error ≈ 3.2% (rule of three); no exact duplicates across 631 images; shortcut learning untested |
-| F5 | **Measurement validity of an LLM judge** | Medical RAG | n = 5 questions. The groundedness rubric references retrieved context the baseline never received. Judge model unrecorded; no human-agreement check; retrieval never measured. **Rebuild** judges all systems against the same passages with a blind, different-family judge, plus human calibration. |
+| F5 | **Measurement validity of an LLM judge** | Medical RAG | n = 5 questions. The groundedness rubric references retrieved context the baseline never received. Judge model unrecorded; no human-agreement check; retrieval never measured. **Rebuild and run** (same passages for all systems, blind different-family judge): RAG ≥ base on groundedness for all 5 questions, but the paired gain ranges from +0.36 to +1.00 depending on how the judge's output is parsed, and every 95% interval includes 0. The judge returned one score per claim instead of one overall score in 14 of 15 groundedness ratings, and gave all 15 answers 3/3 for relevance, including three that stop mid-sentence. |
 | F6 | **Deployment ≠ documentation** | SuperKart API | Docs report a random forest; the deployed artifact contains XGBoost classes; nothing linked the evaluated and the deployed artifact. **Re-run:** the two models are within one SD on CV error, so the choice was defensible but unrecorded. A model card now ties the artifact's SHA-256 to its data hash and metrics. |
 | F7 | **Untested fairness claim, amplified disparity** | Visa certification | Historical certification rate by continent: 57.9%–79.2%. **Re-run:** with continent as an input, the model's predicted rates differ by 43 points between Europe and South America (historical gap: 21). False-denial rates run from 6.4% to 43.5% by continent. Without continent: 22%–28%, at a cost of 0.015 balanced accuracy. |
 | F8 | **Hand-transcribed results drift** | FoodHub, personal loan, SuperKart | FoodHub slides said weekend deliveries were slower (data: weekday 28.3 min vs. weekend 22.5). The personal-loan deck's four-model comparison isn't reproducible from the saved notebook. SuperKart's reported R² ≈ 0.96 vs. 0.925 in the re-run. |
@@ -49,7 +49,7 @@ In 2025 I completed seven applied ML projects spanning EDA, classical ML, ensemb
 | F1 | Every results table includes a trivial baseline. Under imbalance, report balanced accuracy, macro-F1, or PR-AUC alongside the business metric. |
 | F2, F3 | Fix the selection criterion before training. Tune with cross-validation on training data only; touch the test set once. Report all candidate metrics, not just the winning one. |
 | F4 | Report confidence intervals; when results are perfect, look for shortcuts (saliency maps, external test sets) before believing them. |
-| F5 | Treat an LLM judge as a measurement instrument: specify it, keep it blind, calibrate it against human raters, and evaluate retrieval separately from generation. |
+| F5 | Treat an LLM judge as a measurement instrument: specify it, keep it blind, constrain and validate its output format, check for ceiling effects, calibrate it against human raters, and evaluate retrieval separately from generation. Report how sensitive the result is to the scoring rule. |
 | F6, F8 | Generate reported numbers from the same run that produced the artifact. Record artifact hash, data version, and metrics in a model card. Have CI block deployment when they don't match. |
 | F7 | Disaggregate error rates by sensitive or proxy attributes before making any fairness claim; test the model with those features removed; compare predicted with historical disparities. |
 | F9 | Prefer permutation importance on held-out data; state which method was used. |
@@ -64,6 +64,6 @@ In 2025 I completed seven applied ML projects spanning EDA, classical ML, ensemb
 ## Limits of this audit
 - This is a self-audit of course projects.
 - Three were re-run. Their 2025 originals (visa certification and SuperKart modeling notebooks) were not recovered, so the 2025 side of those comparisons relies on my submitted presentations.
-- The medical RAG rebuild has passed a stub end-to-end test but has not yet been run with real models.
+- The medical RAG run is a pilot: 5 questions, no labeled reference pages, and no human ratings yet. Its judge scores show a direction, not an improvement.
 - The continent analysis is a disparity check on one dataset, not a fairness audit. Removing a feature does not remove its proxies.
 - Findings F1–F10 are not unusual in applied ML. That is what makes them worth studying.
