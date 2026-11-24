@@ -1,6 +1,6 @@
 # Applied AI/ML Portfolio
 
-**Mersedyes Livingston** · DevSecOps & compliance engineering · [LinkedIn](https://linkedin.com/in/mersedyes)
+**Mersedyes Livingston** · DevSecOps & compliance engineering · [LinkedIn](https://www.linkedin.com/in/mersedyes-livingston)
 
 Seven applied machine-learning projects, from exploratory analysis to a deployed prediction API and an LLM retrieval system, completed between January and August 2025 as the graded projects of a UT Austin certificate program ([provenance](#provenance-and-scope)). Each includes the presentation I gave and either the original notebook or, where it wasn't recovered, a 2026 re-run.
 
